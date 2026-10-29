@@ -6,8 +6,10 @@ abstract class TaskRepository {
 
   Future<void> agregarTarea(Task task);
 
+  Future<Task?> actualizarEstado(String id, bool completada);
+
   Future<void> actualizarTarea(Task task);
 
   Future<void> eliminarTarea(String id);
-  
+
 }

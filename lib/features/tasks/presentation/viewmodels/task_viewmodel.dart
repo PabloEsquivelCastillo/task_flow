@@ -16,15 +16,23 @@ class TaskViewModel extends ChangeNotifier {
   final List<Task> _tareas = [];
   List<Task> get tareas => List.unmodifiable(_tareas);
 
+
+
   bool _cargando = false;
   bool get cargando => _cargando;
+
+
+
+
 
   Future<void> cargarTareas() async {
       try {
         _cargando = true;
         notifyListeners();
+
         final nuevasTareas = await _repository.obtenerTareas();
 
+        await Future.delayed(const Duration(milliseconds: 1800));
         _tareas.clear();
         _tareas.addAll(nuevasTareas);
 
@@ -34,4 +42,22 @@ class TaskViewModel extends ChangeNotifier {
 
       }
   }
+
+  Future<void> cambiarEstadoTarea(String id) async {
+      final index = _tareas.indexWhere((t) => t.id == id);
+
+      if(index == -1 ) return;
+
+      bool nuevoEstado = !_tareas[index].completada;
+
+      final task = await _repository.actualizarEstado(id, nuevoEstado);
+
+      if(task != null) {
+        _tareas[index] = task;
+        notifyListeners();
+      }
+
+
+  }
+
 }
