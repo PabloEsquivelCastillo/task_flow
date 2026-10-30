@@ -2,13 +2,16 @@ import 'package:task_flow/features/tasks/domain/repositories/task_repository.dar
 import 'package:task_flow/features/tasks/domain/entities/task.dart';
 
 class MemoryTaskRepository implements TaskRepository {
+
   //Lista privada _ llamada _tareas vacía
   final List<Task> _tareas = [
-    Task(id: '1',
-        titulo: 'Estudiar',
-        descripcion: 'Mvvm, provider',
-        completada: false),
-    Task(id: '2', titulo: 'Comer', descripcion: 'Comer rico', completada: true)
+    Task(
+      id: '1',
+      titulo: 'Estudiar',
+      descripcion: 'Mvvm, provider',
+      completada: false,
+    ),
+    Task(id: '2', titulo: 'Comer', descripcion: 'Comer rico', completada: true),
   ];
 
   @override
@@ -23,9 +26,10 @@ class MemoryTaskRepository implements TaskRepository {
   Future<void> actualizarTarea(Task task) async {
     final index = _tareas.indexWhere((i) => i.id == task.id);
 
-    if (index != -1) {
-      _tareas[index] = task;
-    }
+    if(index == -1) return;
+
+    _tareas[index] = task;
+
   }
 
   @override
@@ -40,10 +44,10 @@ class MemoryTaskRepository implements TaskRepository {
 
     //Creamos instancia de task con la modificación en completada
     final tareaActualizada = Task(
-        id: tarea.id,
-        titulo: tarea.titulo,
-        descripcion: tarea.descripcion,
-        completada: completada,
+      id: tarea.id,
+      titulo: tarea.titulo,
+      descripcion: tarea.descripcion,
+      completada: completada,
     );
 
     //Incertamos la instancia en la posición og de la instancia a modificar

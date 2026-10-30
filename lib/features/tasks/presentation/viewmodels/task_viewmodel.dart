@@ -3,14 +3,11 @@ import 'package:task_flow/features/tasks/domain/entities/task.dart';
 import 'package:task_flow/features/tasks/domain/repositories/task_repository.dart';
 import 'package:uuid/uuid.dart';
 
-
 class TaskViewModel extends ChangeNotifier {
-
   final TaskRepository _repository;
 
   TaskViewModel({required TaskRepository repository})
-      : _repository = repository;
-
+    : _repository = repository;
 
   final List<Task> _tareas = [];
 
@@ -18,20 +15,19 @@ class TaskViewModel extends ChangeNotifier {
 
   List<Task> get tareas => List.unmodifiable(_tareas);
 
-
   bool _cargando = false;
 
   bool get cargando => _cargando;
-
 
   Future<void> crearTarea(String titulo, String descripcion) async {
     final String id = _uiid.v4();
 
     final tarea = Task(
-        id: id,
-        titulo: titulo,
-        descripcion: descripcion,
-        completada: false);
+      id: id,
+      titulo: titulo,
+      descripcion: descripcion,
+      completada: false,
+    );
 
     await _repository.agregarTarea(tarea);
 
@@ -39,7 +35,6 @@ class TaskViewModel extends ChangeNotifier {
 
     notifyListeners();
   }
-
 
   Future<void> cargarTareas() async {
     try {
@@ -57,6 +52,24 @@ class TaskViewModel extends ChangeNotifier {
     }
   }
 
+  Future<void> editarTarea(String id, String titulo, String descripcion) async {
+    final index = _tareas.indexWhere((t) => t.id == id);
+
+    if (index == -1) return;
+
+    final task = Task(
+      id: id,
+      titulo: titulo,
+      descripcion: descripcion,
+      completada: _tareas[index].completada,
+    );
+
+    await _repository.actualizarTarea(task);
+
+    _tareas[index] = task;
+    notifyListeners();
+  }
+
   Future<void> cambiarEstadoTarea(String id) async {
     final index = _tareas.indexWhere((t) => t.id == id);
 
@@ -72,4 +85,11 @@ class TaskViewModel extends ChangeNotifier {
     }
   }
 
+  Future<void> eliminarTarea(String id) async {
+    await _repository.eliminarTarea(id);
+    _tareas.removeWhere((t) => t.id == id);
+
+    notifyListeners();
+
+  }
 }
